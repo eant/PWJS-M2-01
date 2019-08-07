@@ -1,3 +1,17 @@
-<h1>Objetos en JavaScript</h1>
-<h2>El camino a la POO</h2>
-<script src="objetos.js"></script>
+<h1>POO en JavaScript</h1>
+<h2>Otra forma de ver la realidad</h2>
+
+<section id="catalogo" style="border:dashed 2px"></section>
+
+<script src="producto.class.js"></script>
+<script>
+	let productoUno = new Producto("Cafe con Leche", 500, 85.65, true) //<-- Instanciar el Objeto "Producto"
+
+	let productoDos = new Producto("Te de Tilo", 450, 88.25)
+
+	productoUno.Mostrar("#catalogo")
+	productoDos.Mostrar("#catalogo")
+
+	Producto.Comparar(productoUno, productoDos)
+
+</script>

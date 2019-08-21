@@ -5,6 +5,7 @@
 
 <script src="producto.class.js"></script>
 <script>
+	/*
 	let productoUno = new Producto("Cafe con Leche", 500, 85.65, true) //<-- Instanciar el Objeto "Producto"
 
 	let productoDos = new Producto("Te de Tilo", 450, 88.25)
@@ -13,5 +14,29 @@
 	productoDos.Mostrar("#catalogo")
 
 	Producto.Comparar(productoUno, productoDos)
+	*/
+	let ajax = new XMLHttpRequest()
+	ajax.open("GET", "https://api.myjson.com/bins/1giaf3")
+	ajax.onload = function(){
+		
+		if( this.status == 200 ){ // ← Respuesta exitosa!
 
+			let productos = Producto.parse( this.response )
+			
+			productos.forEach(producto => {
+				producto.Mostrar("#catalogo")
+			})
+
+		} else {
+			this.onerror()
+		}
+	}
+	ajax.onerror = function(){
+		alert("Error... datos no disponibles :(")
+	}
+	
+	///////////////////////////////////////
+	window.onload = function(){ // ← Ejecutar cuando se cargó absolutamente todo...
+		ajax.send()
+	}
 </script>

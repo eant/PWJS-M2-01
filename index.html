@@ -4,6 +4,7 @@
 <section id="catalogo" style="border:dashed 2px"></section>
 
 <script src="producto.class.js"></script>
+<script src="ajax.js"></script>
 <script>
 	/*
 	let productoUno = new Producto("Cafe con Leche", 500, 85.65, true) //<-- Instanciar el Objeto "Producto"
@@ -15,28 +16,60 @@
 
 	Producto.Comparar(productoUno, productoDos)
 	*/
-	let ajax = new XMLHttpRequest()
-	ajax.open("GET", "https://api.myjson.com/bins/1giaf3")
-	ajax.onload = function(){
-		
-		if( this.status == 200 ){ // ← Respuesta exitosa!
 
-			let productos = Producto.parse( this.response )
+	/*
+	- Comandos para trabajar con la API Storage de JS
+
+		//window.localStorage.setItem("_PRUEBA", "Soy otro dato distinto guardado en Storage")
+		//window.localStorage.getItem("_PRUEBA")
+		//window.localStorage.removetItem("_PRUEBA")
+		//window.localStorage.clear()
+
+	 */
+
+	let ahora = new Date() //Nota: 3600 * 1000 = 1hs
+
+	if( (ahora.getTime() - window.localStorage.getItem("_CREACION")) > (3600 * 1000) ){
+
+		window.localStorage.removeItem("_PRODUCTOS")
+
+	}
+
+	//Trabajando con Promesas
+	let compromiso = new Promise(function(ok, error){
+		/* -- Inicio Proceso -- */
+		if( !window.localStorage.getItem("_PRODUCTOS") ){ // ← Si NO existe un Local Storage...
 			
-			productos.forEach(producto => {
-				producto.Mostrar("#catalogo")
+			get("https://api.myjson.com/bins/1giaf3").then(function(rta){
+
+				window.localStorage.setItem("_PRODUCTOS", rta )
+				window.localStorage.setItem("_CREACION", ahora.getTime() )
+			  //window.localStorage.setItem("_PRODUCTOS", JSON.stringify(productos) )
+				
+				ok( rta )
+
+			}).catch(function(rta){
+				error(rta)
 			})
 
-		} else {
-			this.onerror()
+		} else {  // ← Si EFECTIVAMENTE existe un Local Storage...
+			ok( localStorage.getItem("_PRODUCTOS") ) // ← ...enviarlo al then()
 		}
-	}
-	ajax.onerror = function(){
-		alert("Error... datos no disponibles :(")
-	}
-	
-	///////////////////////////////////////
-	window.onload = function(){ // ← Ejecutar cuando se cargó absolutamente todo...
-		ajax.send()
-	}
+		/* -- Fin de Proceso -- */
+	})
+
+	compromiso.then(function(rta){ // ← Que hacer si sale bien...
+		console.log(rta)
+
+		let productos = Producto.parse(rta)
+
+		productos.forEach(producto => {
+			producto.Mostrar("#catalogo")
+		})
+	})
+
+	compromiso.catch(function(rta){ // ← Que hacer si sale mal...
+		console.error(rta)
+	})
+
 </script>

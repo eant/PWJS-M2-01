@@ -6,7 +6,8 @@ class Producto {
 		this._stock = s
 		this._precio = p
 		this._disponible = d
-
+		this._vDOM = document.createElement("ul")
+		this._anexado = false
 	}
 	//2) Getters y Setters
 
@@ -66,9 +67,10 @@ class Producto {
 
 	//3) Metodos de Instancia
 	Mostrar(area){
+		//debugger
 		//window.document.write(`<p>Hay ${this._stock} unidades de ${this._nombre} que valen ARS ${this._precio}</p>`)
 
-		let ficha = document.createElement("ul")
+		//let ficha = document.createElement("ul")
 
 		let datos = `<li>Nombre: ${this._nombre}</li>
 					 <li>Stock: ${this._stock} unid.</li>
@@ -76,16 +78,26 @@ class Producto {
 					 <li>Disponible: ${this._disponible}</li>
 					 <button>Actualizar</button>`
 
-		ficha.innerHTML = datos
+		this._vDOM.innerHTML = datos
 
-		ficha.querySelector("button").onclick = () => {
+		this._vDOM.querySelector("button").onclick = () => {
 			this.nombre = prompt("Ingrese nuevo nombre:")
 			this.stock = parseInt( prompt("Ingrese nuevo stock:") )
 			this.precio = prompt("Ingrese nuevo precio")
 			this.disponible = confirm("Esta disponible para la venta?")
+
+			// Forzar el (re) renderizado del vDOM
+			this.Mostrar(area)
 		}
 
-		document.querySelector(area).appendChild(ficha)
+		this._vDOM.type = "square"
+		this._vDOM.style.fontFamily = "Tahoma"
+
+		if( !this._anexado ){
+			document.querySelector(area).appendChild( this._vDOM )
+			this._anexado = true
+		}
+
 	}
 
 	//4) Metodos de Clase

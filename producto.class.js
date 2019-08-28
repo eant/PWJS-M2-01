@@ -1,10 +1,11 @@
 class Producto {
 	//1) Constructor
-	constructor(n, s, p, d = false){
+	constructor(n, s, p, i, d = false){
 
 		this._nombre = n
 		this._stock = s
 		this._precio = p
+		this._imagen = i
 		this._disponible = d
 		this._vDOM = document.createElement("ul")
 		this._anexado = false
@@ -49,6 +50,14 @@ class Producto {
 		}
 	}
 
+	get imagen(){
+		return this._imagen
+	}
+
+	set imagen(value){
+		this._imagen = value
+	}
+
 	get disponible(){
 		return this._disponible
 	}
@@ -62,7 +71,6 @@ class Producto {
 		} else {
 			this._disponible = value
 		}
-
 	}
 
 	//3) Metodos de Instancia
@@ -72,7 +80,8 @@ class Producto {
 
 		//let ficha = document.createElement("ul")
 
-		let datos = `<li>Nombre: ${this._nombre}</li>
+		let datos = `<li><img src="${this._imagen}" alt="${this._nombre}" width="320"></li>
+					 <li>Nombre: ${this._nombre}</li>
 					 <li>Stock: ${this._stock} unid.</li>
 					 <li>Precio: ARS ${this._precio}</li>
 					 <li>Disponible: ${this._disponible}</li>
@@ -80,15 +89,7 @@ class Producto {
 
 		this._vDOM.innerHTML = datos
 
-		this._vDOM.querySelector("button").onclick = () => {
-			this.nombre = prompt("Ingrese nuevo nombre:")
-			this.stock = parseInt( prompt("Ingrese nuevo stock:") )
-			this.precio = prompt("Ingrese nuevo precio")
-			this.disponible = confirm("Esta disponible para la venta?")
-
-			// Forzar el (re) renderizado del vDOM
-			this.Mostrar(area)
-		}
+		this._vDOM.querySelector("button").onclick = this._actualizar.bind(this)
 
 		this._vDOM.type = "square"
 		this._vDOM.style.fontFamily = "Tahoma"
@@ -97,7 +98,18 @@ class Producto {
 			document.querySelector(area).appendChild( this._vDOM )
 			this._anexado = true
 		}
+	}
 
+	_actualizar(){
+		console.log(this)
+		this.nombre = prompt("Ingrese nuevo nombre:")
+		this.stock = parseInt( prompt("Ingrese nuevo stock:") )
+		this.precio = prompt("Ingrese nuevo precio")
+		this.imagen = prompt("Ingrese la URL de nueva imagen:")
+		this.disponible = confirm("Esta disponible para la venta?")
+
+		// Forzar el (re) renderizado del vDOM
+		this.Mostrar()
 	}
 
 	//4) Metodos de Clase
@@ -108,7 +120,6 @@ class Producto {
 		} else {
 			document.write(`El ${p1._nombre} es mas barato que el ${p2._nombre}`)
 		}
-
 	}
 
 	static parse(rta){
@@ -118,15 +129,14 @@ class Producto {
 		//1) Si es un Array de Object...
 		if( datos instanceof Array ){
 
-			return datos.map( item => new Producto(item.nombre, item.stock, item.precio, item.disponible) )
+			return datos.map( item => new Producto(item.Nombre, item.Stock, item.Precio, item.Imagen) )
 
 		} else if( datos instanceof Object ){ //2) Si es un solo Object...
 
-			return new Producto(datos.nombre, datos.stock, datos.precio, datos.disponible)
+			return new Producto(datos.Nombre, datos.Stock, datos.Precio, datos.Imagen)
 
 		} else { //3) Si no es ni Array ni Object...
 			throw "ERROR: datos no compatibles para crear objetos Producto"
 		}
-
 	}
 }

@@ -1,13 +1,14 @@
 class Producto {
 	//1) Constructor
-	constructor(n, s, p, i, d = false){
+	constructor(n, s, p, i, pr, d = false){
 
 		this._nombre = n
 		this._stock = s
 		this._precio = p
 		this._imagen = i
+		this._presentacion = pr
 		this._disponible = d
-		this._vDOM = document.createElement("ul")
+		this._vDOM = null
 		this._anexado = false
 	}
 	//2) Getters y Setters
@@ -58,6 +59,14 @@ class Producto {
 		this._imagen = value
 	}
 
+	get presentacion(){
+		return this._presentacion
+	}
+
+	set presentacion(value){
+		this._presentacion = value
+	}
+
 	get disponible(){
 		return this._disponible
 	}
@@ -74,30 +83,50 @@ class Producto {
 	}
 
 	//3) Metodos de Instancia
-	Mostrar(area){
+	Mostrar(area, elemento){
 		//debugger
-		//window.document.write(`<p>Hay ${this._stock} unidades de ${this._nombre} que valen ARS ${this._precio}</p>`)
 
-		//let ficha = document.createElement("ul")
+		//Creo una copia del Objeto HTML
+		this._vDOM = document.querySelector(elemento).cloneNode(true)
 
-		let datos = `<li><img src="${this._imagen}" alt="${this._nombre}" width="320"></li>
-					 <li>Nombre: ${this._nombre}</li>
-					 <li>Stock: ${this._stock} unid.</li>
-					 <li>Precio: ARS ${this._precio}</li>
-					 <li>Disponible: ${this._disponible}</li>
-					 <button>Actualizar</button>`
+		//Cambio los datos de la copia por los del Objeto Producto
+		this._vDOM.querySelector("img").src = this.imagen
+		this._vDOM.querySelector("h6 a").innerText = this.nombre
+		this._vDOM.querySelector(".actual").innerText = "USD " + this.precio
 
-		this._vDOM.innerHTML = datos
+		this._vDOM.querySelectorAll("a").forEach( link => {
+			link.onclick = (event) => {
+				event.preventDefault() //<-- Detengo el evento de "ir a la pagina producto.html"
 
-		this._vDOM.querySelector("button").onclick = this._actualizar.bind(this)
+				window.localStorage.setItem("_ELEGIDO", JSON.stringify(this))
 
-		this._vDOM.type = "square"
-		this._vDOM.style.fontFamily = "Tahoma"
+				window.location.href = event.target.href
+			}
+		})
 
 		if( !this._anexado ){
+
+			this._vDOM.classList.remove("hide")
+
 			document.querySelector(area).appendChild( this._vDOM )
 			this._anexado = true
 		}
+		/*
+
+				let datos = `<li><img src="${this._imagen}" alt="${this._nombre}" width="320"></li>
+							 <li>Nombre: ${this._nombre}</li>
+							 <li>Stock: ${this._stock} unid.</li>
+							 <li>Precio: ARS ${this._precio}</li>
+							 <li>Disponible: ${this._disponible}</li>
+							 <button>Actualizar</button>`
+
+				this._vDOM.innerHTML = datos
+
+				this._vDOM.querySelector("button").onclick = this._actualizar.bind(this)
+
+				this._vDOM.type = "square"
+				this._vDOM.style.fontFamily = "Tahoma"
+		*/		
 	}
 
 	_actualizar(){
@@ -129,11 +158,11 @@ class Producto {
 		//1) Si es un Array de Object...
 		if( datos instanceof Array ){
 
-			return datos.map( item => new Producto(item.Nombre, item.Stock, item.Precio, item.Imagen) )
+			return datos.map( item => new Producto(item.Nombre, item.Stock, item.Precio, item.Imagen, item.Presentacion) )
 
 		} else if( datos instanceof Object ){ //2) Si es un solo Object...
 
-			return new Producto(datos.Nombre, datos.Stock, datos.Precio, datos.Imagen)
+			return new Producto(datos.Nombre, datos.Stock, datos.Precio, datos.Imagen, datos.Presentacion)
 
 		} else { //3) Si no es ni Array ni Object...
 			throw "ERROR: datos no compatibles para crear objetos Producto"

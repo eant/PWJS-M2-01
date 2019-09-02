@@ -13,6 +13,9 @@
 	<!--//fonts-->
 	<script src="js/jquery.min.js"></script>
 	<!--script-->
+	<style>
+		img { width: 100% }
+	</style>
 	</head>
 	<body> 
 		<!--header-->
@@ -121,6 +124,21 @@
 			</div>
 		</div>
 		<!--initiate accordion-->
-		<script src="js/custom.js"></script>
+		<script src="js/producto.class.js"></script>
+		<script>
+			let elegido = window.localStorage.getItem("_ELEGIDO")
+
+			    elegido = JSON.parse(elegido)
+
+			    elegido = new Producto(elegido._nombre, elegido._stock, elegido._precio, elegido._imagen, elegido._presentacion)
+
+			console.log(elegido)
+
+			document.querySelector("#etalage img").src = elegido.imagen
+			document.querySelector(".desc1 h4").innerText = elegido.nombre
+			document.querySelector(".left-n").innerText = "USD " + elegido.precio
+			document.querySelector(".desc1 h6").innerText = elegido.stock + " unid. en stock"
+			document.querySelector(".desc1 p").innerText = elegido.presentacion	
+		</script>
 	</body>
 </html>

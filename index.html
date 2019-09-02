@@ -12,6 +12,11 @@
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
 	<!--//fonts-->
 	<script src="js/jquery.min.js"></script>
+	<style>
+		.producto:nth-child(3n+3){
+			margin-right: 0;
+		}
+	</style>
 	<!--script-->
 	</head>
 	<body> 
@@ -53,9 +58,9 @@
 	<div class="products">
 		<h5 class="latest-product">PRODUCTOS DESTACADOS</h5>
 	</div>
-	<div class="product-left">
+	<div class="product-left" id="catalogo-destacados">
 		<!-- Producto #1 -->
-		<div class="col-sm-4 col-md-4 chain-grid">
+		<div class="col-sm-4 col-md-4 chain-grid producto hide">
 			<a href="producto.html"><img class="img-responsive chain" src="images/productos/P001.jpg" alt=" " /></a>
 			<div class="grid-chain-bottom">
 				<h6><a href="producto.html">Lorem ipsum dolor #1</a></h6>
@@ -68,35 +73,8 @@
 				</div>
 			</div>
 		</div>
-		<!-- Producto #2 -->
-		<div class="col-sm-4 col-md-4 chain-grid">
-			<a href="producto.html"><img class="img-responsive chain" src="images/productos/P002.jpg" alt=" " /></a>
-			<div class="grid-chain-bottom">
-				<h6><a href="producto.html">Lorem ipsum dolor #2</a></h6>
-				<div class="star-price">
-					<div class="dolor-grid"> 
-						<span class="actual">$300</span>
-					</div>
-					<a class="now-get get-cart" href="producto.html">VER MÁS</a> 
-					<div class="clearfix"></div>
-				</div>
-			</div>
-		</div>
-		<!-- Producto #3 -->
-		<div class="col-sm-4 col-md-4 chain-grid grid-top-chain">
-			<a href="producto.html"><img class="img-responsive chain" src="images/productos/P003.jpg" alt=" " /></a>
-			<div class="grid-chain-bottom">
-				<h6><a href="producto.html">Lorem ipsum dolor #3</a></h6>
-				<div class="star-price">
-					<div class="dolor-grid"> 
-						<span class="actual">$300</span>
-					</div>
-					<a class="now-get get-cart" href="producto.html">VER MÁS</a> 
-					<div class="clearfix"></div>
-				</div>
-			</div>
-		</div>
-		<div class="clearfix"></div>
+		
+		
 	</div>
 	<div class="clearfix"> </div>
 </div>
@@ -196,6 +174,54 @@
 			</div>
 		</div>
 		<!--initiate accordion-->
-		<script src="js/custom.js"></script>
+		<script src="js/producto.class.js"></script>
+		<script src="js/ajax.js"></script>
+		<script>
+			//Expiracion de los Local Storage
+			let ahora = new Date() //Nota: 3600 * 1000 = 1hs
+
+			if( (ahora.getTime() - window.localStorage.getItem("_CREACION")) > (3600 * 1000) ){
+
+				window.localStorage.removeItem("_PRODUCTOS")
+
+			}
+
+			//Trabajando con Promesas
+			let compromiso = new Promise(function(ok, error){
+				/* -- Inicio Proceso -- */
+				if( !window.localStorage.getItem("_PRODUCTOS") ){ // ← Si NO existe un Local Storage...
+					
+					get("https://api.myjson.com/bins/dcg2p").then(function(rta){
+
+						window.localStorage.setItem("_PRODUCTOS", rta )
+						window.localStorage.setItem("_CREACION", ahora.getTime() )
+						
+						ok( rta )
+
+					}).catch(function(rta){
+						error(rta)
+					})
+
+				} else {  // ← Si EFECTIVAMENTE existe un Local Storage...
+					ok( localStorage.getItem("_PRODUCTOS") ) // ← ...enviarlo al then()
+				}
+				/* -- Fin de Proceso -- */
+			})
+
+			compromiso.then(function(rta){ // ← Que hacer si sale bien...
+				console.log(rta)
+
+				let productos = Producto.parse(rta)
+
+				productos.forEach(producto => {
+					producto.Mostrar("#catalogo-destacados", ".producto")
+					//console.log(producto)
+				})
+			})
+
+			compromiso.catch(function(rta){ // ← Que hacer si sale mal...
+				console.error(rta)
+			})
+		</script>
 	</body>
 </html>

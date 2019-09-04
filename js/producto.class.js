@@ -5,7 +5,7 @@ class Producto {
 		this._nombre = n
 		this._stock = s
 		this._precio = p
-		this._imagen = i
+		this._imagen = "https://i.ibb.co/Z8fdKyK/nofoto.jpg"
 		this._presentacion = pr
 		this._disponible = d
 		this._vDOM = null
@@ -86,8 +86,8 @@ class Producto {
 	Mostrar(area, elemento){
 		//debugger
 
-		//Creo una copia del Objeto HTML
-		this._vDOM = document.querySelector(elemento).cloneNode(true)
+		//Creo una copia del Objeto HTML (si es la primera vez)
+		this._vDOM = this._vDOM || document.querySelector(elemento).cloneNode(true)
 
 		//Cambio los datos de la copia por los del Objeto Producto
 		this._vDOM.querySelector("img").src = this.imagen
@@ -103,6 +103,8 @@ class Producto {
 				window.location.href = event.target.href
 			}
 		})
+
+		this._vDOM.querySelector("button").onclick = this._actualizar.bind(this)
 
 		if( !this._anexado ){
 
@@ -130,13 +132,13 @@ class Producto {
 	}
 
 	_actualizar(){
-		console.log(this)
-		this.nombre = prompt("Ingrese nuevo nombre:")
-		this.stock = parseInt( prompt("Ingrese nuevo stock:") )
-		this.precio = prompt("Ingrese nuevo precio")
-		this.imagen = prompt("Ingrese la URL de nueva imagen:")
+		this.nombre = prompt("Ingrese nuevo nombre:", this.nombre)
+		this.stock = parseInt( prompt("Ingrese nuevo stock:", this.stock) )
+		this.precio = prompt("Ingrese nuevo precio sin IVA:", this.precio)
+		this.imagen = prompt("Ingrese la URL de nueva imagen:", this.imagen)
 		this.disponible = confirm("Esta disponible para la venta?")
 
+		console.log(this)
 		// Forzar el (re) renderizado del vDOM
 		this.Mostrar()
 	}

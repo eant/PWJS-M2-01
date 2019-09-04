@@ -59,6 +59,7 @@
 		<h5 class="latest-product">PRODUCTOS DESTACADOS</h5>
 	</div>
 	<div class="product-left" id="catalogo-destacados">
+
 		<!-- Producto #1 -->
 		<div class="col-sm-4 col-md-4 chain-grid producto hide">
 			<a href="producto.html"><img class="img-responsive chain" src="images/productos/P001.jpg" alt=" " /></a>
@@ -69,11 +70,13 @@
 						<span class="actual">$300</span>
 					</div>
 					<a class="now-get get-cart" href="producto.html">VER MÁS</a> 
+					
+					<button class="now-get get-cart" style="margin:auto;display:block">ACTUALIZAR</button>
+
 					<div class="clearfix"></div>
 				</div>
 			</div>
 		</div>
-		
 		
 	</div>
 	<div class="clearfix"> </div>
@@ -191,7 +194,7 @@
 				/* -- Inicio Proceso -- */
 				if( !window.localStorage.getItem("_PRODUCTOS") ){ // ← Si NO existe un Local Storage...
 					
-					get("https://api.myjson.com/bins/dcg2p").then(function(rta){
+					get("https://jsonstorage.net/api/items/dc466a2a-091e-4a41-82e6-2092e2d17992").then(function(rta){
 
 						window.localStorage.setItem("_PRODUCTOS", rta )
 						window.localStorage.setItem("_CREACION", ahora.getTime() )

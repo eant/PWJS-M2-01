@@ -33,11 +33,12 @@
 						<div class="clearfix"></div>
 					</div>
 					<div class="header-bottom-right">					
-						<!--div class="account">
-							<a href="ingreso.html"><span></span> TU CUENTA</a>
-						</div-->
+						<div class="account hide">
+							<span></span>
+							<button id="logoutGoogle">[x] Cerrar Sesión</button>
+						</div>
 						<ul class="login">
-							<li><a href="ingreso.html"><span></span> INGRESAR</a></li>
+							<li><a href="#" id="loginGoogle"><span></span> INGRESAR</a></li>
 							&nbsp;|&nbsp;
 							<li><a href="registro.html">REGISTRARME</a></li>
 							&nbsp;|&nbsp;
@@ -177,9 +178,49 @@
 			</div>
 		</div>
 		<!--initiate accordion-->
+		<script src="https://apis.google.com/js/api:client.js"></script>
 		<script src="js/producto.class.js"></script>
 		<script src="js/ajax.js"></script>
 		<script>
+			////////// LOGIN CON GOOGLE //////////
+			console.log(gapi)
+
+			gapi.load('auth2', function(){
+				
+				let credenciales = {
+					client_id : "48381509054-c0rqett3o8vet46ao8fef9ftmiq25l3h.apps.googleusercontent.com",
+					cookiepolicy : "single_host_origin"
+				}
+
+				window.auth2 = gapi.auth2.init(credenciales)
+
+			})
+
+			document.querySelector("#loginGoogle").onclick = function(e){
+				e.preventDefault()
+				//alert("Ahora deberia logearme con Google")
+				auth2.signIn().then(function(){ //<-- Login Exitoso!
+					
+					let usuario = auth2.currentUser.get().getBasicProfile()
+
+					document.querySelector(".account").classList.remove("hide")
+					document.querySelector(".account span").innerText = "Bienvenido " + usuario.ofa
+
+					document.querySelector(".login").classList.add("hide")
+
+					console.log(usuario)
+
+				})
+			}
+
+			document.querySelector("#logoutGoogle").onclick = function(e){
+				auth2.signOut()
+
+				document.querySelector(".account").classList.add("hide")
+				document.querySelector(".login").classList.remove("hide")
+			}
+			////////// FIN DE LOGIN CON GOOGLE //////////
+
 			//Expiracion de los Local Storage
 			let ahora = new Date() //Nota: 3600 * 1000 = 1hs
 
@@ -212,7 +253,7 @@
 			})
 
 			compromiso.then(function(rta){ // ← Que hacer si sale bien...
-				console.log(rta)
+				//console.log(rta)
 
 				let productos = Producto.parse(rta)
 

@@ -5,7 +5,7 @@ class Producto {
 		this._nombre = n
 		this._stock = s
 		this._precio = p
-		this._imagen = "https://i.ibb.co/Z8fdKyK/nofoto.jpg"
+		this._imagen = i
 		this._presentacion = pr
 		this._disponible = d
 		this._vDOM = null

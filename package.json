@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/smessina/simplenodejs/issues"
   },
-  "homepage": "https://github.com/smessina/simplenodejs#readme"
+  "homepage": "https://github.com/smessina/simplenodejs#readme",
+  "dependencies": {
+    "nodemon": "^1.19.2"
+  }
 }
